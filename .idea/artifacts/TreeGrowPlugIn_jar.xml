@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="TreeGrowPlugIn:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/TreeGrowPlugIn_jar</output-path>
+    <root id="archive" name="TreeGrowPlugIn.jar">
+      <element id="module-output" name="TreeGrowPlugIn" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/spigot-api-1.15.2-R0.1-20200315.081002-71.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
