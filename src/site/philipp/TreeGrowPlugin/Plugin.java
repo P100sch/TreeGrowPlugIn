@@ -1,4 +1,4 @@
-package site.philipp.TreeGorwPlugin;
+package site.philipp.TreeGrowPlugin;
 
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -40,6 +40,7 @@ public class Plugin extends JavaPlugin {
                             if (blockData instanceof Sapling) {
                                 Sapling sapling = ((Sapling) blockData);
                                 sapling.setStage(sapling.getMaximumStage());
+                                System.out.println("TreeGrowPlugIn executed!");
                             }
                         }
                     }
@@ -51,9 +52,11 @@ public class Plugin extends JavaPlugin {
     @Override
     public void onEnable(){
         PlayerToggleSneakEvent.getHandlerList().register(toggleSneakListener);
+        System.out.println("TreeGrowPlugIn aktiviert!");
     }
     @Override
     public void onDisable(){
         PlayerToggleSneakEvent.getHandlerList().unregister(toggleSneakListener);
+        System.out.println("TreeGrowPlugIn deaktiviert!");
     }
 }

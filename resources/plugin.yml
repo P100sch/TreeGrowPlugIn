@@ -1,5 +1,5 @@
-name: Tree Grow Plugin
-version: 0.0.1
-author: P100sch-Hyato
-main: site.philipp.TreeGrowPlugin.Plugin.class
-api-version: 15.2
+name: TreeGrowPlugIn
+version: 1.0.0
+authors: [P100sch, Hytario]
+main: site.philipp.TreeGrowPlugin.Plugin
+api-version: 1.15
