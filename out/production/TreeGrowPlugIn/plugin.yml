@@ -1,0 +1,5 @@
+name: TreeGrowPlugIn
+version: 1.0.0
+authors: [P100sch, Hytario]
+main: site.philipp.TreeGrowPlugin.Plugin
+api-version: 1.15

@@ -1,13 +1,12 @@
 package site.philipp.TreeGrowPlugin;
 
-import org.bukkit.Location;
-import org.bukkit.World;
+import org.bukkit.*;
+import org.bukkit.block.Biome;
+import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Sapling;
-import org.bukkit.event.Event;
-import org.bukkit.event.EventException;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
+import org.bukkit.entity.Player;
+import org.bukkit.event.*;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.plugin.EventExecutor;
 import org.bukkit.plugin.RegisteredListener;
@@ -24,23 +23,44 @@ public class Plugin extends JavaPlugin {
                 PlayerToggleSneakEvent sneakEvent = (PlayerToggleSneakEvent) event;
                 World currentWorld = sneakEvent.getPlayer().getWorld();
                 Location playerLocation = sneakEvent.getPlayer().getLocation();
+                Player player = sneakEvent.getPlayer();
                 for (int x = playerLocation.getBlockX() - 2; x <= playerLocation.getBlockX() + 2; x++) {
-                    if (x == playerLocation.getBlockX()) {
-                        continue;
-                    }
                     for (int y = playerLocation.getBlockY() - 2; y <= playerLocation.getBlockY() + 2; y++) {
-                        if (y == playerLocation.getBlockY()) {
-                            continue;
-                        }
                         for (int z = playerLocation.getBlockZ() - 2; z <= playerLocation.getBlockZ() + 2; z++) {
-                            if (z == playerLocation.getBlockZ()) {
+                            if (z == playerLocation.getBlockZ() && y == playerLocation.getBlockY() && x == playerLocation.getBlockX()) {
                                 continue;
                             }
-                            BlockData blockData = currentWorld.getBlockAt(x, y, z).getBlockData();
+                            Block block = currentWorld.getBlockAt(x, y, z);
+                            BlockData blockData = block.getBlockData();
                             if (blockData instanceof Sapling) {
                                 Sapling sapling = ((Sapling) blockData);
                                 sapling.setStage(sapling.getMaximumStage());
-                                System.out.println("TreeGrowPlugIn executed!");
+                                block.setBlockData(blockData,true);
+
+                                String blockName = block.getType().name();
+                                int indexOfUnderscore = blockName.indexOf('_');
+                                int indexOfDarkOak = blockName.indexOf("DARK_OAK");
+
+                                TreeType treeType = TreeType.DARK_OAK;
+                                if (indexOfDarkOak < 0){
+                                    String materialName = blockName.substring(0, indexOfUnderscore);
+                                    player.sendMessage(materialName);
+                                    //treeType = blockName.substring(0, indexOfUnderscore);
+                                    if(materialName.equalsIgnoreCase("OAK")){
+                                        if(block.getBiome() == Biome.SWAMP){
+                                            treeType = TreeType.SWAMP;
+                                        }
+                                        else{
+                                            treeType = TreeType.TREE;
+                                        }
+                                    }
+                                    else{
+                                        treeType = TreeType.valueOf(materialName);
+                                    }
+                                }
+                                block.setType(Material.AIR);
+
+                                currentWorld.generateTree(block.getLocation(), treeType);
                             }
                         }
                     }
@@ -52,11 +72,11 @@ public class Plugin extends JavaPlugin {
     @Override
     public void onEnable(){
         PlayerToggleSneakEvent.getHandlerList().register(toggleSneakListener);
-        System.out.println("TreeGrowPlugIn aktiviert!");
+        System.out.println("\u001B[32m" + "TreeGrowPlugIn enabled!" + "\u001B[0m");
     }
     @Override
     public void onDisable(){
         PlayerToggleSneakEvent.getHandlerList().unregister(toggleSneakListener);
-        System.out.println("TreeGrowPlugIn deaktiviert!");
+        System.out.println("TreeGrowPlugIn disabled!");
     }
 }
