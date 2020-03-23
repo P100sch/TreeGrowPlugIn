@@ -3,3 +3,7 @@ version: 1.0.0
 authors: [P100sch, Hytario]
 main: site.philipp.TreeGrowPlugin.Plugin
 api-version: 1.15
+commands:
+  TreeGrowSound:
+    description: Play sound if tree grows.
+    usage: "/<command> [on|off]"

@@ -3,20 +3,28 @@ package site.philipp.TreeGrowPlugin;
 import org.bukkit.*;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Sapling;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.*;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.EventExecutor;
 import org.bukkit.plugin.RegisteredListener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Plugin extends JavaPlugin {
-    private RegisteredListener toggleSneakListener;
+    private RegisteredListener _toggleSneakListener;
+    private String _prefix = "[TreeGrowPlugIn]";
+    private FileConfiguration _config = getConfig();
+    public static final String TreeGrowSound = "TreeGrowSound";
 
     public Plugin() {
-        toggleSneakListener = new RegisteredListener(new Listener() {
+        _toggleSneakListener = new RegisteredListener(new Listener() {
         }, new EventExecutor() {
             @Override
             public void execute(Listener listener, Event event) throws EventException {
@@ -44,7 +52,6 @@ public class Plugin extends JavaPlugin {
                                 TreeType treeType = TreeType.DARK_OAK;
                                 if (indexOfDarkOak < 0){
                                     String materialName = blockName.substring(0, indexOfUnderscore);
-                                    player.sendMessage(materialName);
                                     //treeType = blockName.substring(0, indexOfUnderscore);
                                     if(materialName.equalsIgnoreCase("OAK")){
                                         if(block.getBiome() == Biome.SWAMP){
@@ -60,7 +67,16 @@ public class Plugin extends JavaPlugin {
                                 }
                                 block.setType(Material.AIR);
 
-                                currentWorld.generateTree(block.getLocation(), treeType);
+                                boolean worked = currentWorld.generateTree(block.getLocation(), treeType);
+                                //Bukkit.getPluginManager().callEvent(new PlayerInteractEvent(player, Action.RIGHT_CLICK_BLOCK, new ItemStack(Material.BONE_MEAL, 1), block, BlockFace.UP));
+                                if(_config.getBoolean(TreeGrowSound)) {
+                                    if (worked) {
+                                        player.playNote(player.getLocation(), Instrument.PLING, Note.natural(1, Note.Tone.E));
+                                    } else {
+                                        block.setType(blockData.getMaterial());
+                                        player.playNote(player.getLocation(), Instrument.PLING, Note.natural(1, Note.Tone.D));
+                                    }
+                                }
                             }
                         }
                     }
@@ -71,12 +87,23 @@ public class Plugin extends JavaPlugin {
 
     @Override
     public void onEnable(){
-        PlayerToggleSneakEvent.getHandlerList().register(toggleSneakListener);
-        System.out.println("\u001B[32m" + "TreeGrowPlugIn enabled!" + "\u001B[0m");
+        PlayerToggleSneakEvent.getHandlerList().register(_toggleSneakListener);
+        System.out.println("\u001b[36m" + _prefix + " loading config..." + "\u001B[0m");
+
+        System.out.println(_config.options());
+        _config.addDefault(TreeGrowSound, true);
+        _config.options().copyDefaults(true);
+        saveConfig();
+
+        getCommand(TreeGrowSound).setExecutor(new CommandTreeGrowSound(_config));
+
+        System.out.println("\u001b[32m" + _prefix + " loaded config!" + "\u001B[0m");
+        System.out.println("\u001B[32m" + _prefix + " enabled!" + "\u001B[0m");
     }
     @Override
     public void onDisable(){
-        PlayerToggleSneakEvent.getHandlerList().unregister(toggleSneakListener);
+        PlayerToggleSneakEvent.getHandlerList().unregister(_toggleSneakListener);
+        saveConfig();
         System.out.println("TreeGrowPlugIn disabled!");
     }
 }
