@@ -76,7 +76,7 @@ public class Plugin extends JavaPlugin {
                                 if(hit == _config.getInt(TreeGrowChance)){
                                     block.setType(Material.AIR);
                                     boolean worked = currentWorld.generateTree(block.getLocation(), treeType);
-                                    ArrayList<Location> circleLocs = getCircle(block.getLocation().add(0,2,0), _radius,_pointAmount);
+                                    ArrayList<Location> circleLocs = getCircle(block.getLocation().add(0.5,0.5,0.5), _radius,_pointAmount);
                                     Particle particleChoice;
                                     if(_config.getBoolean(TreeGrowSound)) {
                                         if (worked) {
@@ -87,9 +87,7 @@ public class Plugin extends JavaPlugin {
                                             particleChoice = Particle.SMOKE_NORMAL;
                                         }
 
-                                        player.sendMessage("TreeParticles: " + treeParticles + " ParticleChoice: " + particleChoice.name());
                                         if(treeParticles){
-                                            player.sendMessage(" Tree Ring: Radius: " + _radius + " PointAmount: " + _pointAmount + " ParticleAmount: " + _particleAmount);
                                             for(Location circleLoc : circleLocs) {
                                                 player.getWorld().spawnParticle(particleChoice, circleLoc, _particleAmount);
                                             }
