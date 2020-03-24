@@ -7,12 +7,19 @@ commands:
   TreeGrowSound:
     description: Play sound if tree grows.
     usage: "/<command> [on|off]"
+    permission: DPerm
   TreeGrowChance:
     description: Chance that a tree grows.
     usage: "/<command> [Int]"
+    permission: DPerm
   PlayerRing:
     description: Visual effect around the player.
     usage: "/<command> Radio[double] PointAmount[int] ParticleAmount[int]"
+    permission: DPerm
   TreeParticles:
     description: Spawn a few Particles if tree grows.
     usage: "/<command> [on|off]"
+    permission: DPerm
+permissions:
+  DPerm:
+    default: op
