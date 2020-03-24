@@ -81,22 +81,25 @@ public class Plugin extends JavaPlugin {
                                     if(_config.getBoolean(TreeGrowSound)) {
                                         if (worked) {
                                             player.playNote(player.getLocation(), Instrument.PLING, Note.natural(1, Note.Tone.E));
-                                            particleChoice = Particle.VILLAGER_HAPPY;
                                         } else {
                                             player.playNote(player.getLocation(), Instrument.PLING, Note.natural(1, Note.Tone.D));
+                                        }
+                                    }
+
+                                    if(treeParticles){
+                                        if (worked) {
+                                            particleChoice = Particle.VILLAGER_HAPPY;
+                                        } else {
                                             particleChoice = Particle.SMOKE_NORMAL;
                                         }
 
-                                        if(treeParticles){
-                                            for(Location circleLoc : circleLocs) {
-                                                player.getWorld().spawnParticle(particleChoice, circleLoc, _particleAmount);
-                                            }
+                                        for(Location circleLoc : circleLocs) {
+                                            player.getWorld().spawnParticle(particleChoice, circleLoc, _particleAmount);
                                         }
                                     }
-                                    else{
-                                        if(!worked){
-                                            block.setType(blockData.getMaterial());
-                                        }
+
+                                    if(!worked){
+                                        block.setType(blockData.getMaterial());
                                     }
                                 }
                             }
