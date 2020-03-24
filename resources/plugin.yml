@@ -10,3 +10,9 @@ commands:
   TreeGrowChance:
     description: Chance that a tree grows.
     usage: "/<command> [Int]"
+  PlayerRing:
+    description: Visual effect around the player.
+    usage: "/<command> Radio[double] PointAmount[int] ParticleAmount[int]"
+  TreeParticles:
+    description: Spawn a few Particles if tree grows.
+    usage: "/<command> [on|off]"
