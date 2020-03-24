@@ -7,3 +7,6 @@ commands:
   TreeGrowSound:
     description: Play sound if tree grows.
     usage: "/<command> [on|off]"
+  TreeGrowChance:
+    description: Chance that a tree grows.
+    usage: "/<command> [Int]"

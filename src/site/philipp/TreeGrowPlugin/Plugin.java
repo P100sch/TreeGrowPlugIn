@@ -22,6 +22,7 @@ public class Plugin extends JavaPlugin {
     private String _prefix = "[TreeGrowPlugIn]";
     private FileConfiguration _config = getConfig();
     public static final String TreeGrowSound = "TreeGrowSound";
+    public static final String TreeGrowChance = "TreeGrowChance";
 
     public Plugin() {
         _toggleSneakListener = new RegisteredListener(new Listener() {
@@ -65,18 +66,30 @@ public class Plugin extends JavaPlugin {
                                         treeType = TreeType.valueOf(materialName);
                                     }
                                 }
-                                block.setType(Material.AIR);
+                                int hit = (int)Math.round(Math.random()*100);
 
-                                boolean worked = currentWorld.generateTree(block.getLocation(), treeType);
-                                //Bukkit.getPluginManager().callEvent(new PlayerInteractEvent(player, Action.RIGHT_CLICK_BLOCK, new ItemStack(Material.BONE_MEAL, 1), block, BlockFace.UP));
-                                if(_config.getBoolean(TreeGrowSound)) {
-                                    if (worked) {
-                                        player.playNote(player.getLocation(), Instrument.PLING, Note.natural(1, Note.Tone.E));
-                                    } else {
-                                        block.setType(blockData.getMaterial());
-                                        player.playNote(player.getLocation(), Instrument.PLING, Note.natural(1, Note.Tone.D));
+                                //currentWorld.spawnParticle(Particle.DRAGON_BREATH, block.getLocation(), 5);
+                                if(hit == _config.getInt(TreeGrowChance)){
+                                    block.setType(Material.AIR);
+                                    boolean worked = currentWorld.generateTree(block.getLocation(), treeType);
+
+                                    if(_config.getBoolean(TreeGrowSound)) {
+                                        if (worked) {
+                                            player.playNote(player.getLocation(), Instrument.PLING, Note.natural(1, Note.Tone.E));
+                                            //currentWorld.spawnParticle(Particle.VILLAGER_HAPPY, block.getLocation(), 10);
+                                        } else {
+                                            player.playNote(player.getLocation(), Instrument.PLING, Note.natural(1, Note.Tone.D));
+                                            //currentWorld.spawnParticle(Particle.SMOKE_NORMAL, block.getLocation(), 10);
+                                        }
+                                    }
+                                    else{
+                                        if(!worked){
+                                            block.setType(blockData.getMaterial());
+                                        }
                                     }
                                 }
+
+                                //Bukkit.getPluginManager().callEvent(new PlayerInteractEvent(player, Action.RIGHT_CLICK_BLOCK, new ItemStack(Material.BONE_MEAL, 1), block, BlockFace.UP));
                             }
                         }
                     }
@@ -92,10 +105,12 @@ public class Plugin extends JavaPlugin {
 
         System.out.println(_config.options());
         _config.addDefault(TreeGrowSound, true);
+        _config.addDefault(TreeGrowChance, 5);
         _config.options().copyDefaults(true);
         saveConfig();
 
         getCommand(TreeGrowSound).setExecutor(new CommandTreeGrowSound(_config));
+        getCommand(TreeGrowChance).setExecutor(new CommandTreeGrowChance(_config));
 
         System.out.println("\u001b[32m" + _prefix + " loaded config!" + "\u001B[0m");
         System.out.println("\u001B[32m" + _prefix + " enabled!" + "\u001B[0m");
